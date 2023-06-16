@@ -43,7 +43,7 @@ const changeUserInfo = (req, res) => {
   const userId = req.user;
   const change = req.body;
 
-  User.findByIdAndUpdate(userId, change, { new: true })
+  User.findByIdAndUpdate(userId, change, { new: true, runValidators: true })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -64,7 +64,7 @@ const changeAvatar = (req, res) => {
   const userId = req.user;
   const change = req.body;
 
-  User.findByIdAndUpdate(userId, change, { new: true })
+  User.findByIdAndUpdate(userId, change, { new: true, runValidators: true})
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
