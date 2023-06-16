@@ -40,10 +40,10 @@ const createUser = (req, res) => {
 };
 
 const changeUserInfo = (req, res) => {
-  const filter = req.user;
+  const userId = req.user;
   const change = req.body;
 
-  User.findOneAndUpdate(filter, change, { new: true })
+  User.findByIdAndUpdate(userId, change, { new: true })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -61,10 +61,10 @@ const changeUserInfo = (req, res) => {
 };
 
 const changeAvatar = (req, res) => {
-  const filter = req.user;
+  const userId = req.user;
   const change = req.body;
 
-  User.findOneAndUpdate(filter, change, { new: true })
+  User.findByIdAndUpdate(userId, change, { new: true })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
