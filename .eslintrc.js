@@ -1,16 +1,15 @@
-/* eslint-disable quote-props */
 module.exports = {
   env: {
-    browser: true,
+    browser: false,
     es2021: true,
   },
-  extends: 'airbnb-base',
+  extends: 'airbnb',
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
   rules: {
     'no-underscore-dangle':
-    ['error', { 'allow': ['_id'] }],
+    ['error', { allow: ['_id'] }],
   },
 };

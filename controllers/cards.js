@@ -1,31 +1,35 @@
 const Card = require('../models/card');
 
+const NOT_FOUND_ERROR = 404;
+const BAD_REQUEST_ERROR = 400;
+const INTERNAL_SERVER_ERROR = 500;
+const NO_ERROR = 200;
+
 const getCards = (req, res) => {
   Card.find({})
-    .populate('owner')
-    .then((cards) => res.status(200).send(cards))
-    .catch((err) => res.status(500).send({ message: 'Internal Server Error', err: err.message, stack: err.stack }));
+    .populate('likes owner')
+    .then((cards) => res.status(NO_ERROR).send(cards))
+    .catch((err) => {
+      res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
+      console.log(err.name, err.message);
+    });
 };
 
 const deleteCard = (req, res) => {
-  Card.deleteOne(req.params.id)
+  Card.findByIdAndDelete(req.params.id)
     .orFail(() => new Error('Not found'))
-    .then((data) => res.status(200).send(data))
+    .then((data) => res.status(NO_ERROR).send(data))
     .catch((err) => {
-      if (err.message === 'Not found') {
+      if (err.name === 'CastError') {
+        res.status(BAD_REQUEST_ERROR).send({ message: 'Некорректные данные' });
+      } else if (err.message === 'Not found') {
         res
-          .status(404)
+          .status(NOT_FOUND_ERROR)
           .send({
-            message: 'Пользователь не найден',
+            message: 'Карточка не найдена',
           });
       } else {
-        res
-          .status(500)
-          .send({
-            message: 'Internal Server Error',
-            err: err.message,
-            stack: err.stack,
-          });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
       }
     });
 };
@@ -35,12 +39,12 @@ const createCard = (req, res) => {
     ...req.body,
     owner: req.user._id,
   })
-    .then((cards) => res.status(200).send(cards))
+    .then((cards) => res.status(NO_ERROR).send(cards))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Некорректные данные' });
+        res.status(BAD_REQUEST_ERROR).send({ message: 'Некорректные данные' });
       } else {
-        res.status(500).send({ message: 'Internal Server Error', name: err.name, err: err.message });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
       }
     });
 };
@@ -48,19 +52,24 @@ const createCard = (req, res) => {
 const likeCard = (req, res) => {
   const { cardId } = req.params;
 
-  Card.findByIdAndUpdate(cardId, { $addToSet: { likes: req.user } }, { new: true })
-    .then((card) => res.status(200).send(card))
+  Card.findByIdAndUpdate(
+    cardId,
+    { $addToSet: { likes: req.user } },
+    { new: true, runValidators: true },
+  )
+    .orFail(() => new Error('Error'))
+    .then((card) => res.status(NO_ERROR).send(card))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Некорректные данные' });
+      if (err.name === 'CastError') {
+        res.status(BAD_REQUEST_ERROR).send({ message: 'Некорректные данные' });
       } else if (err.message === 'Not found') {
         res
-          .status(404)
+          .status(NOT_FOUND_ERROR)
           .send({
-            message: 'Пользователь не найден',
+            message: 'Карточка не найдена',
           });
       } else {
-        res.status(500).send({ message: 'Internal Server Error', name: err.name, err: err.message });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
       }
     });
 };
@@ -71,20 +80,20 @@ const dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     cardId,
     { $pull: { likes: req.user } },
-    { new: true },
+    { new: true, runValidators: true },
   )
-    .then((card) => res.status(200).send(card))
+    .then((card) => res.status(NO_ERROR).send(card))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Некорректные данные' });
+      if (err.name === 'CastError') {
+        res.status(BAD_REQUEST_ERROR).send({ message: 'Некорректные данные' });
       } else if (err.message === 'Not found') {
         res
-          .status(404)
+          .status(NOT_FOUND_ERROR)
           .send({
-            message: 'Пользователь не найден',
+            message: 'Карточка не найдена',
           });
       } else {
-        res.status(500).send({ message: 'Internal Server Error', name: err.name, err: err.message });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
       }
     });
 };

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const mongoose = require('mongoose');
 
 const cardSchema = new mongoose.Schema({
@@ -17,9 +18,8 @@ const cardSchema = new mongoose.Schema({
     required: true,
   },
   likes: [{
-    likes: {
-      type: String,
-    },
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
   },
   ],
   createdAt: {
