@@ -20,7 +20,7 @@ const getUserById = (req, res) => {
     .then((user) => res.status(NO_ERROR).send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST_ERROR).send({ message: 'Некорректные данные' });
+        res.status(BAD_REQUEST_ERROR).send({ message: 'Некорректные данные', name: err.name, err: err.message });
       } else if (err.message === 'Not found') {
         res
           .status(NOT_FOUND_ERROR)
@@ -52,6 +52,7 @@ const changeUserInfo = (req, res) => {
   const change = req.body;
 
   User.findByIdAndUpdate(userId, change, { new: true, runValidators: true })
+    .orFail(() => new Error('Not found'))
     .then((user) => res.status(NO_ERROR).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -73,6 +74,7 @@ const changeAvatar = (req, res) => {
   const change = req.body;
 
   User.findByIdAndUpdate(userId, change, { new: true, runValidators: true })
+    .orFail(() => new Error('Not found'))
     .then((user) => res.status(NO_ERROR).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {

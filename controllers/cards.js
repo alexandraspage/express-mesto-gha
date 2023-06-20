@@ -27,6 +27,7 @@ const deleteCard = (req, res) => {
           .status(NOT_FOUND_ERROR)
           .send({
             message: 'Карточка не найдена',
+            err: err.name,
           });
       } else {
         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
@@ -57,7 +58,7 @@ const likeCard = (req, res) => {
     { $addToSet: { likes: req.user } },
     { new: true, runValidators: true },
   )
-    .orFail(() => new Error('Error'))
+    .orFail(() => new Error('Not found'))
     .then((card) => res.status(NO_ERROR).send(card))
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -82,6 +83,7 @@ const dislikeCard = (req, res) => {
     { $pull: { likes: req.user } },
     { new: true, runValidators: true },
   )
+    .orFail(() => new Error('Not found'))
     .then((card) => res.status(NO_ERROR).send(card))
     .catch((err) => {
       if (err.name === 'CastError') {
