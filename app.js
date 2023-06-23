@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const userRoutes = require('./routes/users');
 const cardRoutes = require('./routes/cards');
 
+const NOT_FOUND_ERROR = 404;
+
 const app = express();
 
 app.use(express.json());
@@ -22,7 +24,12 @@ app.use((req, res, next) => {
 });
 
 app.use(userRoutes);
+
 app.use(cardRoutes);
+
+app.use('*', (req, res) => {
+  res.status(NOT_FOUND_ERROR).send({ message: '404 ошибка' });
+});
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
