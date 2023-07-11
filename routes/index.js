@@ -1,4 +1,5 @@
 const router = require('express').Router();
+
 const NOT_FOUND_ERROR = 404;
 const auth = require('../middlewares/auth');
 

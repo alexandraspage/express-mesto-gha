@@ -3,8 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes');
 const { errorHandler } = require('./middlewares/error');
-//const bodyParser = require('body-parser');
-
+//  const body Parser = require('body-parser');
 
 const app = express();
 
@@ -16,7 +15,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
 
-//app.use(bodyParser.json());
+//  app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use(routes);

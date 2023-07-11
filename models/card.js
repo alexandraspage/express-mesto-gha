@@ -1,6 +1,4 @@
-/* eslint-disable no-undef */
 const mongoose = require('mongoose');
-const validator = require('validator');
 
 function validateLink(avatar) {
   const regExp = /https?:\/\/\w+.+#?/;

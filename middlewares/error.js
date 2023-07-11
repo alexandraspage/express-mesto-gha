@@ -1,4 +1,3 @@
-
 class NotFoundError extends Error {
   constructor(err) {
     super(err);
@@ -48,8 +47,8 @@ class EmailError extends Error {
 }
 
 const errorHandler = (err, req, res, next) => {
-let error;
-console.log({ error2: err });
+  let error;
+  console.log({ error2: err });
 
   if (err.message === 'Not found' || err.statusCode === 404) {
     error = new NotFoundError(err);
@@ -69,4 +68,6 @@ console.log({ error2: err });
   next();
 };
 
-module.exports = { errorHandler, UnauthorizedError, NotFoundError, ForbiddenError };
+module.exports = {
+  errorHandler, UnauthorizedError, NotFoundError, ForbiddenError,
+};
