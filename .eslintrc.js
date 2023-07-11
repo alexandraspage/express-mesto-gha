@@ -9,6 +9,7 @@ module.exports = {
   },
   rules: {
     'no-underscore-dangle':
-    ['error', { allow: ['_id'] }],
+    ['error', { allow: ['_id', '_message'] }],
+    'max-classes-per-file': ['error', { ignoreExpressions: false, max: 10 }],
   },
 };

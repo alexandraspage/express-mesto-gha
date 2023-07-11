@@ -1,5 +1,11 @@
 /* eslint-disable no-undef */
 const mongoose = require('mongoose');
+const validator = require('validator');
+
+function validateLink(avatar) {
+  const regExp = /https?:\/\/\w+.+#?/;
+  return regExp.test(avatar);
+}
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -11,6 +17,7 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     required: true,
+    validate: [validateLink, 'Введите ссылку'],
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
