@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const NOT_FOUND_ERROR = 404;
+const { NotFoundError } = require('../middlewares/error');
 const auth = require('../middlewares/auth');
 
 const { createUser, login } = require('../controllers/users');
@@ -16,8 +16,8 @@ router.use(auth);
 router.use(userRoutes);
 router.use(cardsRoutes);
 
-router.use('*', (req, res) => {
-  res.status(NOT_FOUND_ERROR).send({ message: '404 ошибка' });
+router.use('*', (req, res, next) => {
+  next(new NotFoundError());
 });
 
 module.exports = router;

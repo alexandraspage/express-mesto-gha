@@ -2,6 +2,7 @@ const Card = require('../models/card');
 const { NotFoundError, ForbiddenError } = require('../middlewares/error');
 
 const NO_ERROR = 200;
+const CREATED = 201;
 
 const getCards = (req, res, next) => {
   Card.find({})
@@ -30,7 +31,7 @@ const createCard = (req, res, next) => {
     ...req.body,
     owner: req.user._id,
   })
-    .then((cards) => res.status(NO_ERROR).send(cards))
+    .then((cards) => res.status(CREATED).send(cards))
     .catch(next);
 };
 

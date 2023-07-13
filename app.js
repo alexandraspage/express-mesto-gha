@@ -2,7 +2,10 @@ const cookieParser = require('cookie-parser');
 const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes');
+const helmet = require('helmet');
+
 const { errorHandler } = require('./middlewares/error');
+const { errors } = require('celebrate');
 //  const body Parser = require('body-parser');
 
 const app = express();
@@ -19,8 +22,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 app.use(cookieParser());
 
 app.use(routes);
-
+app.use(errors());
 app.use(errorHandler);
+app.use(helmet());
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);

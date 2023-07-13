@@ -1,14 +1,44 @@
 const router = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
+
 const {
   getUsers, getUserById, createUser, changeUserInfo, changeAvatar, getUser, login,
 } = require('../controllers/users');
 
 router.get('/users', getUsers);
+
 router.get('/users/:id', getUserById);
-router.post('/signup', createUser);
-router.post('/signin', login);
-router.patch('/users/me', changeUserInfo);
+
+router.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30).optional(),
+    about: Joi.string().min(2).max(30).optional(),
+    avatar: Joi.string().pattern(/https?:\/\/\w+.+#?/).optional(),
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+  }),
+}), createUser);
+
+router.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+  }),
+}), login);
+
+router.patch('/users/me', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30).optional(),
+    about: Joi.string().min(2).max(30).optional(),
+  }),
+}), changeUserInfo);
+
 router.get('/users/me', getUser);
-router.patch('/users/me/avatar', changeAvatar);
+
+router.patch('/users/me/avatar', celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().pattern(/https?:\/\/\w+.+#?/).required(),
+  }),
+}), changeAvatar);
 
 module.exports = router;

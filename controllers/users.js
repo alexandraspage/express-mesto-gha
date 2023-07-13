@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jsonWebToken = require('jsonwebtoken');
 const User = require('../models/user');
-const { UnauthorizedError, NotFoundError } = require('../middlewares/error');
+const CREATED = 201;
+const { UnauthorizedError, NotFoundError, ForbiddenError } = require('../middlewares/error');
 
 const NO_ERROR = 200;
 
@@ -35,7 +36,7 @@ const createUser = (req, res, next) => {
       email: req.body.email,
       password: hash,
     }))
-    .then((user) => res.status(NO_ERROR).send({ data: user }))
+    .then((user) => res.status(CREATED).send({ data: user }))
     .catch(next);
 };
 
@@ -61,11 +62,6 @@ const changeAvatar = (req, res, next) => {
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-
-  if (!email || !password) {
-    res.status(403).send({ message: 'Введите данные' });
-    return;
-  }
 
   User.findOne({ email })
     .select('+password')
