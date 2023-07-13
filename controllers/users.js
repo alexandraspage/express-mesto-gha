@@ -1,8 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jsonWebToken = require('jsonwebtoken');
+
 const User = require('../models/user');
+
 const CREATED = 201;
-const { UnauthorizedError, NotFoundError, ForbiddenError } = require('../middlewares/error');
+const { UnauthorizedError, NotFoundError } = require('../middlewares/error');
 
 const NO_ERROR = 200;
 
