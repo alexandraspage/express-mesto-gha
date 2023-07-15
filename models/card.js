@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 function validateLink(avatar) {
-  const regExp = /https?:\/\/\w+.+#?/;
+  const regExp = /https?:\/\/\w+.+?.ru#?/;
   return regExp.test(avatar);
 }
 

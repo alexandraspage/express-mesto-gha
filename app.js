@@ -5,7 +5,6 @@ const { errors } = require('celebrate');
 const helmet = require('helmet');
 const routes = require('./routes');
 
-
 const { errorHandler } = require('./middlewares/error');
 
 //  const body Parser = require('body-parser');
